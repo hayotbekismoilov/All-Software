@@ -1,0 +1,233 @@
+"""Data types for NotebookLM API client.
+
+This module contains all dataclasses and re-exports enums from rpc/types.py
+for convenient access.
+
+Usage:
+    from notebooklm.types import Notebook, Source, Artifact, GenerationStatus
+    from notebooklm.types import AudioFormat, VideoFormat
+    from notebooklm.types import SourceType, ArtifactType  # str enums for .kind
+"""
+
+from datetime import datetime
+from typing import Any
+
+from ._types import artifacts as _artifact_types
+from ._types import notebooks as _notebook_types
+from ._types import sources as _source_types
+from ._types.artifacts import (
+    Artifact,
+    ArtifactType,
+    GenerationStatus,
+    ReportSuggestion,
+)
+from ._types.chat import (
+    AskResult,
+    ChatMode,
+    ChatReference,
+    ConversationTurn,
+)
+from ._types.common import (
+    AccountLimits,
+    AccountTier,
+    CitedSourceSelection,
+    ClientMetricsSnapshot,
+    ConnectionLimits,
+    RpcTelemetryEvent,
+    UnknownTypeWarning,
+)
+from ._types.common import (
+    _datetime_from_timestamp as _common_datetime_from_timestamp,
+)
+from ._types.notebooks import (
+    Notebook,
+    NotebookDescription,
+    NotebookMetadata,
+    SourceSummary,
+    SuggestedTopic,
+)
+from ._types.notes import Note
+from ._types.sharing import SharedUser, ShareStatus
+from ._types.sources import (
+    Source,
+    SourceFulltext,
+    SourceType,
+)
+
+# Import exceptions from centralized module (re-export for backward compatibility)
+from .exceptions import (
+    ArtifactDownloadError,
+    ArtifactError,
+    ArtifactNotFoundError,
+    ArtifactNotReadyError,
+    ArtifactParseError,
+    SourceAddError,
+    SourceError,
+    SourceNotFoundError,
+    SourceProcessingError,
+    SourceTimeoutError,
+)
+
+# Re-export enums from rpc/types.py for convenience
+from .rpc.types import (
+    ArtifactStatus,
+    AudioFormat,
+    AudioLength,
+    ChatGoal,
+    ChatResponseLength,
+    DriveMimeType,
+    ExportType,
+    InfographicDetail,
+    InfographicOrientation,
+    InfographicStyle,
+    QuizDifficulty,
+    QuizQuantity,
+    ReportFormat,
+    ShareAccess,
+    SharePermission,
+    ShareViewLevel,
+    SlideDeckFormat,
+    SlideDeckLength,
+    SourceStatus,
+    VideoFormat,
+    VideoStyle,
+    artifact_status_to_str,
+    source_status_to_str,
+)
+from .rpc.types import (
+    ArtifactTypeCode as _ArtifactTypeCode,
+)
+
+# Keep private facade names that first-party tests and external callers have
+# historically imported while the implementation moves into _types modules.
+_ARTIFACT_TYPE_CODE_MAP = _artifact_types._ARTIFACT_TYPE_CODE_MAP
+_SOURCE_TYPE_CODE_MAP = _source_types._SOURCE_TYPE_CODE_MAP
+_SOURCE_TYPE_COMPAT_MAP = _source_types._SOURCE_TYPE_COMPAT_MAP
+_extract_artifact_url = _artifact_types._extract_artifact_url
+_extract_audio_artifact_url = _artifact_types._extract_audio_artifact_url
+_extract_infographic_artifact_url = _artifact_types._extract_infographic_artifact_url
+_extract_notebook_sources_count = _notebook_types._extract_notebook_sources_count
+_extract_slide_deck_artifact_url = _artifact_types._extract_slide_deck_artifact_url
+_extract_source_created_at = _source_types._extract_source_created_at
+_extract_source_url = _source_types._extract_source_url
+_extract_video_artifact_url = _artifact_types._extract_video_artifact_url
+_is_valid_artifact_url = _artifact_types._is_valid_artifact_url
+_map_artifact_kind = _artifact_types._map_artifact_kind
+_safe_source_type = _source_types._safe_source_type
+_warned_artifact_types = _artifact_types._warned_artifact_types
+_warned_source_types = _source_types._warned_source_types
+
+# Imported for the historical ``notebooklm.types.ArtifactTypeCode`` attribute,
+# but intentionally absent from ``__all__``.
+ArtifactTypeCode = _ArtifactTypeCode
+
+
+def _datetime_from_timestamp(value: Any) -> datetime | None:
+    """Convert an API seconds timestamp to ``datetime``, returning ``None`` if invalid."""
+    return _common_datetime_from_timestamp(value, datetime_type=datetime)
+
+
+__all__ = [
+    # Dataclasses
+    "CitedSourceSelection",
+    "ConnectionLimits",
+    "ClientMetricsSnapshot",
+    "RpcTelemetryEvent",
+    "Notebook",
+    "NotebookDescription",
+    "NotebookMetadata",
+    "SuggestedTopic",
+    "Source",
+    "SourceFulltext",
+    "SourceSummary",
+    "Artifact",
+    "GenerationStatus",
+    "ReportSuggestion",
+    "Note",
+    "ConversationTurn",
+    "ChatReference",
+    "AskResult",
+    "ChatMode",
+    "SharedUser",
+    "ShareStatus",
+    # Exceptions
+    "SourceError",
+    "SourceAddError",
+    "SourceProcessingError",
+    "SourceTimeoutError",
+    "SourceNotFoundError",
+    "ArtifactError",
+    "ArtifactNotFoundError",
+    "ArtifactNotReadyError",
+    "ArtifactParseError",
+    "ArtifactDownloadError",
+    # Warnings
+    "UnknownTypeWarning",
+    # User-facing type enums (str enums for .kind property)
+    "SourceType",
+    "ArtifactType",
+    # Re-exported enums (configuration/RPC)
+    "ArtifactStatus",
+    # Note: ArtifactTypeCode is internal - not exported here
+    "AudioFormat",
+    "AudioLength",
+    "VideoFormat",
+    "VideoStyle",
+    "QuizQuantity",
+    "QuizDifficulty",
+    "InfographicOrientation",
+    "InfographicDetail",
+    "InfographicStyle",
+    "SlideDeckFormat",
+    "SlideDeckLength",
+    "ReportFormat",
+    "ChatGoal",
+    "ChatResponseLength",
+    "DriveMimeType",
+    "ExportType",
+    "SourceStatus",
+    "ShareAccess",
+    "ShareViewLevel",
+    "SharePermission",
+    # Helper functions
+    "artifact_status_to_str",
+    "source_status_to_str",
+]
+
+
+for _public_common_type in (
+    AccountLimits,
+    AccountTier,
+    CitedSourceSelection,
+    ClientMetricsSnapshot,
+    ConnectionLimits,
+    RpcTelemetryEvent,
+    UnknownTypeWarning,
+):
+    _public_common_type.__module__ = __name__
+del _public_common_type
+
+
+for _public_moved_type in (
+    Artifact,
+    ArtifactType,
+    AskResult,
+    ChatMode,
+    ChatReference,
+    ConversationTurn,
+    GenerationStatus,
+    Note,
+    Notebook,
+    NotebookDescription,
+    NotebookMetadata,
+    ReportSuggestion,
+    SharedUser,
+    ShareStatus,
+    Source,
+    SourceFulltext,
+    SourceSummary,
+    SourceType,
+    SuggestedTopic,
+):
+    _public_moved_type.__module__ = __name__
+del _public_moved_type
